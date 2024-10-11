@@ -101,7 +101,7 @@ runs:
         SA_NAME: ${{ inputs.sa-name }}
 
     - name: Install Redis
-      if: ${{ inputs.redis == true }}
+      if: ${{ inputs.redis == 'true' }}
       shell: bash
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -114,7 +114,7 @@ runs:
           --set 'commonConfiguration'='notify-keyspace-events Ex'
 
     - name: Install Agones
-      if: ${{ inputs.agones == true }}
+      if: ${{ inputs.agones == 'true' }}
       shell: bash
       run: |
         helm repo add agones https://agones.dev/chart/stable
@@ -135,7 +135,7 @@ runs:
         NAMESPACE: ${{ inputs.namespace }}
 
     - name: Install Argo Events
-      if: ${{ inputs.argo-events == true }}
+      if: ${{ inputs.argo-events == 'true' }}
       shell: bash
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm
@@ -151,7 +151,7 @@ runs:
           --timeout=300s
 
     - name: Install Argo Workflows
-      if: ${{ inputs.argo-workflows == true }}
+      if: ${{ inputs.argo-workflows == 'true' }}
       shell: bash
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm

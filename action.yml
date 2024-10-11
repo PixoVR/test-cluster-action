@@ -145,11 +145,6 @@ runs:
           --namespace argo-events \
           --create-namespace
 
-        kubectl wait --namespace argo-events \
-          --for=condition=ready pod \
-          --selector=app.kubernetes.io/instance=argo-events \
-          --timeout=300s
-
     - name: Install Argo Workflows
       if: ${{ inputs.argo-workflows == 'true' }}
       shell: bash

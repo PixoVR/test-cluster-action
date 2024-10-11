@@ -157,11 +157,6 @@ runs:
           --create-namespace \
           --version 0.22.15
 
-        kubectl wait --namespace argo-workflows \
-          --for=condition=ready pod \
-          --selector=app.kubernetes.io/instance=argo-workflows \
-          --timeout=300s
-
         if [[ -n "${GOOGLE_JSON_KEY}" ]]; then
           kubectl create secret generic google-credentials --from-literal=credentials=${GOOGLE_JSON_KEY} -n ${NAMESPACE}
         

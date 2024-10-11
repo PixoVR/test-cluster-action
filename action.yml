@@ -159,24 +159,22 @@ runs:
 
         if [[ -z "${GOOGLE_JSON_KEY}" ]]; then
           kubectl create secret generic google-credentials --from-literal=credentials=${GOOGLE_JSON_KEY} -n ${NAMESPACE}
-        
           if [[ -z "${GCS_BUCKET_NAME}" ]]; then
             kubectl apply -n ${NAMESPACE} -f - <<EOF
-            apiVersion: v1
-            kind: ConfigMap
-            metadata:
-              name: artifact-repositories
-            data:
-              gcs-artifact-repository: |
-                gcs:
-                  bucket: ${GCS_BUCKET_NAME}
-                  path: artifacts
-                  serviceAccountKeySecret:
-                    name: google-credentials
-                    key: credentials
-            EOF
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: artifact-repositories
+        data:
+          gcs-artifact-repository: |
+            gcs:
+              bucket: ${GCS_BUCKET_NAME}
+              path: artifacts
+              serviceAccountKeySecret:
+                name: google-credentials
+                key: credentials
+        EOF
           fi
-        
         fi
       env:
         GOOGLE_JSON_KEY: ${{ inputs.gcp-credentials }}

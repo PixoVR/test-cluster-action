@@ -33,9 +33,6 @@ inputs:
     required: false
     type: string
 outputs:
-  kubeconfig:
-    description: 'Kubeconfig for the test cluster'
-    value: ${{ steps.cluster.outputs.kubeconfig }}
   cluster-name:
     description: 'Name of the test cluster'
     value: ${{ steps.cluster.outputs.cluster-name }}
@@ -48,9 +45,6 @@ outputs:
   gcp-credentials-file:
     description: 'Path to the Google Cloud credentials file'
     value: ${{ steps.gcloud.outputs.gcp-credentials-file }}
-
-env:
-  GOOGLE_JSON_KEY_PATH: '/home/runner/google-key.json'
 
 runs:
   using: composite
@@ -79,7 +73,7 @@ runs:
         gcloud auth activate-service-account --key-file=${GOOGLE_JSON_KEY_PATH}
         echo "gcp-credentials-file=${GOOGLE_JSON_KEY_PATH}" >> $GITHUB_OUTPUT
       env:
-        GOOGLE_JSON_KEY_PATH: ${{ env.GOOGLE_JSON_KEY_PATH }}
+        GOOGLE_JSON_KEY_PATH: '/home/runner/google-key.json'
         GOOGLE_JSON_KEY_CONTENTS: ${{ inputs.gcp-credentials }}
 
     - id: cluster
@@ -97,10 +91,7 @@ runs:
         kubectl create clusterrolebinding test-deployment-binding --clusterrole=system:controller:deployment-controller --serviceaccount=${NAMESPACE}:${SA_NAME}
 
         k3d kubeconfig write ${CLUSTER_NAME} > /home/runner/.config/kubeconfig-test-cluster.yaml
-        echo "KUBECONFIG CONTENTS"
-        cat /home/runner/.config/kubeconfig-test-cluster.yaml
         
-        echo "kubeconfig=$(cat /home/runner/.config/kubeconfig-test-cluster.yaml)" >> $GITHUB_OUTPUT
         echo "cluster-name=${CLUSTER_NAME}" >> $GITHUB_OUTPUT
         echo "namespace=${NAMESPACE}" >> $GITHUB_OUTPUT
         echo "sa-name=${SA_NAME}" >> $GITHUB_OUTPUT

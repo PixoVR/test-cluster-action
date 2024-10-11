@@ -35,19 +35,19 @@ inputs:
 outputs:
   cluster-name:
     description: 'Name of the test cluster'
-    value: ${{ jobs.init.outputs.cluster-name }}
+    value: ${{ steps.init.outputs.cluster-name }}
   kubeconfig:
     description: 'Kubeconfig for the test cluster'
-    value: ${{ jobs.init.outputs.kubeconfig }}
+    value: ${{ steps.init.outputs.kubeconfig }}
   namespace:
     description: 'Namespace to use for the test cluster'
-    value: ${{ jobs.init.outputs.namespace }}
+    value: ${{ steps.init.outputs.namespace }}
   sa-name:
     description: 'Service Account name to use for the test cluster'
-    value: ${{ jobs.init.outputs.sa-name }}
+    value: ${{ steps.init.outputs.sa-name }}
   gcp-credentials-file:
     description: 'Path to the Google Cloud credentials file'
-    value: ${{ jobs.init.outputs.gcp-credentials-file }}
+    value: ${{ steps.init.outputs.gcp-credentials-file }}
 
 env:
   GOOGLE_JSON_KEY_PATH: '/home/runner/google-key.json'

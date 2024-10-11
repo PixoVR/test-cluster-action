@@ -33,43 +33,38 @@ inputs:
     required: false
     type: string
 outputs:
-  cluster-name:
-    description: 'Name of the test cluster'
-    value: ${{ steps.init.outputs.cluster-name }}
   kubeconfig:
     description: 'Kubeconfig for the test cluster'
-    value: ${{ steps.init.outputs.kubeconfig }}
+    value: ${{ steps.cluster.outputs.kubeconfig }}
+  cluster-name:
+    description: 'Name of the test cluster'
+    value: ${{ steps.cluster.outputs.cluster-name }}
   namespace:
     description: 'Namespace to use for the test cluster'
-    value: ${{ steps.init.outputs.namespace }}
+    value: ${{ steps.cluster.outputs.namespace }}
   sa-name:
     description: 'Service Account name to use for the test cluster'
-    value: ${{ steps.init.outputs.sa-name }}
+    value: ${{ steps.cluster.outputs.sa-name }}
   gcp-credentials-file:
     description: 'Path to the Google Cloud credentials file'
-    value: ${{ steps.init.outputs.gcp-credentials-file }}
+    value: ${{ steps.gcloud.outputs.gcp-credentials-file }}
 
 env:
   GOOGLE_JSON_KEY_PATH: '/home/runner/google-key.json'
 
 runs:
   using: composite
-  runs-on: ubuntu-latest
-  outputs:
-    kubeconfig: ${{ steps.cluster.outputs.kubeconfig }}
-    cluster-name: ${{ steps.cluster.outputs.cluster-name }}
-    namespace: ${{ steps.cluster.outputs.namespace }}
-    sa-name: ${{ steps.cluster.outputs.sa-name }}
-    gcp-credentials-file: ${{ steps.gcloud.outputs.gcp-credentials-file }}
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Install k3d
+      shell: bash
       run: |
         curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
     - name: Install Helm
+      shell: bash
       run: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
         chmod 700 get_helm.sh
@@ -78,6 +73,7 @@ runs:
     - id: gcloud
       name: Setup Google Cloud SDK
       if: ${{ inputs.gcp-credentials != '' }}
+      shell: bash
       run: |
         echo "${GOOGLE_JSON_KEY_CONTENTS}" > ${GOOGLE_JSON_KEY_PATH}
         gcloud auth activate-service-account --key-file=${GOOGLE_JSON_KEY_PATH}
@@ -88,6 +84,7 @@ runs:
 
     - id: cluster
       name: Init Test Cluster
+      shell: bash
       run: |
         k3d cluster create ${CLUSTER_NAME}
         kubectl wait --for=condition=ready node --all --timeout=300s
@@ -114,6 +111,7 @@ runs:
 
     - name: Install Redis
       if: ${{ inputs.redis == true }}
+      shell: bash
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
@@ -126,6 +124,7 @@ runs:
 
     - name: Install Agones
       if: ${{ inputs.agones == true }}
+      shell: bash
       run: |
         helm repo add agones https://agones.dev/chart/stable
         helm repo update
@@ -146,6 +145,7 @@ runs:
 
     - name: Install Argo Events
       if: ${{ inputs.argo-events == true }}
+      shell: bash
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update
@@ -161,6 +161,7 @@ runs:
 
     - name: Install Argo Workflows
       if: ${{ inputs.argo-workflows == true }}
+      shell: bash
       run: |
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update
@@ -200,3 +201,4 @@ runs:
         GOOGLE_JSON_KEY: ${{ inputs.gcp-credentials }}
         GCS_BUCKET_NAME: ${{ inputs.gcs-bucket-name }}
         NAMESPACE: ${{ inputs.namespace }}
+

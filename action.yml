@@ -121,6 +121,7 @@ runs:
         helm repo update
         
         helm upgrade --install agones agones/agones \
+          --version 1.45.0 \
           --namespace agones-system \
           --create-namespace \
           --set 'gameservers.namespaces[0]'=${NAMESPACE} \

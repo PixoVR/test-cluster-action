@@ -20,6 +20,10 @@ inputs:
   agones:
     required: false
     type: boolean
+  agones-version:
+    required: false
+    type: string
+    default: '1.45.0'
   argo-events:
     required: false
     type: boolean
@@ -121,6 +125,7 @@ runs:
         helm repo update
         
         helm upgrade --install agones agones/agones \
+          --version ${AGONES_VERSION} \
           --namespace agones-system \
           --create-namespace \
           --set 'gameservers.namespaces[0]'=${NAMESPACE} \
@@ -133,6 +138,7 @@ runs:
         kubectl wait --namespace agones-system --for=condition=ready pod --selector=app=agones --timeout=300s
       env:
         NAMESPACE: ${{ inputs.namespace }}
+        AGONES_VERSION: ${{ inputs.agones-version }}
 
     - name: Install Argo Events
       if: ${{ inputs.argo-events == 'true' }}

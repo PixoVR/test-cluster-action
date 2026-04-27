@@ -59,7 +59,7 @@ runs:
     - name: Install k3d
       shell: bash
       run: |
-        curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+        curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
     - name: Install Helm
       shell: bash

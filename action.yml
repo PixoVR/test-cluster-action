@@ -24,6 +24,10 @@ inputs:
     required: false
     type: string
     default: '1.45.0'
+  k3d-version:
+    required: false
+    type: string
+    default: 'v5.8.3'
   argo-events:
     required: false
     type: boolean
@@ -59,7 +63,7 @@ runs:
     - name: Install k3d
       shell: bash
       run: |
-        curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+        curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${{ inputs.k3d-version }} bash
 
     - name: Install Helm
       shell: bash

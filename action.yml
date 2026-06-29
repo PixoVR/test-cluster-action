@@ -89,6 +89,17 @@ runs:
       shell: bash
       run: |
         k3d cluster create ${CLUSTER_NAME}
+
+        echo "Waiting for API server to become reachable..."
+        for i in $(seq 1 30); do
+          if kubectl cluster-info 2>/dev/null; then
+            echo "API server is ready."
+            break
+          fi
+          echo "  Attempt $i/30 - API server not ready, retrying in 5s..."
+          sleep 5
+        done
+
         kubectl wait --for=condition=ready node --all --timeout=300s
 
         kubectl create ns ${NAMESPACE}

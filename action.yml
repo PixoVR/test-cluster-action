@@ -178,9 +178,9 @@ runs:
           --create-namespace \
           --version 0.22.15
 
-        if [[ -z "${GOOGLE_JSON_KEY}" ]]; then
-          kubectl create secret generic google-credentials --from-literal=credentials=${GOOGLE_JSON_KEY} -n ${NAMESPACE}
-          if [[ -z "${GCS_BUCKET_NAME}" ]]; then
+        if [[ -n "${GOOGLE_JSON_KEY}" ]]; then
+          kubectl create secret generic google-credentials --from-literal=credentials="${GOOGLE_JSON_KEY}" -n ${NAMESPACE}
+          if [[ -n "${GCS_BUCKET_NAME}" ]]; then
             kubectl apply -n ${NAMESPACE} -f - <<EOF
         apiVersion: v1
         kind: ConfigMap
